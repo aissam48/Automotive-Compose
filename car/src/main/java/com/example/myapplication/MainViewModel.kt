@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import android.car.*
+import android.car.hardware.CarPropertyValue
 import android.car.hardware.property.*
 import android.content.Context
 import android.util.Log
+import java.util.concurrent.Executors
 
 data class MainUiState(
     val items: List<Item> = emptyList(),
@@ -22,6 +24,7 @@ class MainViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    private val executor = Executors.newSingleThreadExecutor()
 
     init {
         loadItems()
@@ -84,6 +87,37 @@ class MainViewModel : ViewModel() {
         ) ?: 0f
         println("getRealCarInfo batteryLevel = $batteryLevel")
 
+    }
+
+    fun listenToSpeed(){
+        val propertyList = carPropertyManager?.propertyList
+        propertyList?.forEach { config ->
+            Log.d("CarProps", "Property ID: ${config.propertyId}, name: ${config.toString()}")
+        }
+
+        val callback = object : CarPropertyManager.CarPropertyEventCallback {
+            override fun onChangeEvent(value: CarPropertyValue<*>) {
+                if (value.propertyId == VehiclePropertyIds.PERF_VEHICLE_SPEED) {
+                    // Speed is in m/s, convert to km/h
+                    val speedMps = (value.value as? Float) ?: 0f
+                    println("Vehicle speed ${speedMps * 3.6f}")
+                }
+            }
+
+            override fun onErrorEvent(propId: Int, zone: Int) {
+                Log.e("CarSpeed", "Error reading speed")
+            }
+        }
+
+        try {
+            carPropertyManager?.registerCallback(
+                callback,
+                VehiclePropertyIds.PERF_VEHICLE_SPEED,
+                CarPropertyManager.SENSOR_RATE_NORMAL
+            )
+        } catch (e: Exception) {
+            Log.e("CarSpeed", "Error: ${e.message}")
+        }
     }
 
 

@@ -26,7 +26,9 @@ class MainActivity : AppCompatActivity() {
                 color = Color.White
             ) {
                 val uiState by viewModel.uiState.collectAsState()
-viewModel.getRealCarInfo()
+                viewModel.getRealCarInfo()
+                viewModel.listenToSpeed()
+
                 MainScreen(
                     items = uiState.items,
                     isLoading = uiState.isLoading,
