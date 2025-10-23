@@ -38,9 +38,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
 
     }
-    // Use the Automotive platform
+    //Use the Automotive platform
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+
+    buildFeatures {
+        viewBinding = true
     }
 
 
