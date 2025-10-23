@@ -42,6 +42,8 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+
 }
 
 dependencies {
@@ -86,5 +88,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
+    // For Automotive OS
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+// Compose Maps (if available for your version)
+    implementation("com.google.maps.android:maps-compose:2.14.0")
+// Location services (if needed)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
 }

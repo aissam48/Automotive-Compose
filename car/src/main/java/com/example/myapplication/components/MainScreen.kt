@@ -11,6 +11,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.models.Item
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,94 +39,18 @@ fun MainScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        }
+        },
+        modifier = modifier
+            .fillMaxSize()
     ) { paddingValues ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when {
-                isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(64.dp)
-                            .align(Alignment.Center)
-                    )
-                }
 
-                items.isEmpty() -> {
-                    Text(
-                        text = "No items available",
-                        modifier = Modifier.align(Alignment.Center),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontSize = 20.sp
-                    )
-                }
 
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = 8.dp)
-                    ) {
-                        items(items = items, key = { it.id }) { item ->
-                            ItemCard(
-                                item = item,
-                                onClick = { onItemClick(item) }
-                            )
-                        }
-                    }
-                }
+        GoogleMap(modifier = Modifier.fillMaxSize()) {
+
+            MapEffect {map->
+
             }
+
         }
-    }
-
-    // Dialog for selected item
-    if (selectedItem != null) {
-        AlertDialog(
-            onDismissRequest = onDismissDialog,
-            title = {
-                Text(
-                    text = selectedItem.title,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
-                Column {
-                    Text(
-                        text = selectedItem.icon,
-                        fontSize = 64.sp,
-                        modifier = Modifier.padding(vertical = 16.dp)
-                    )
-                    Text(
-                        text = selectedItem.description,
-                        fontSize = 18.sp
-                    )
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = onDismissDialog,
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(
-                        text = "Open",
-                        fontSize = 20.sp
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = onDismissDialog,
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(
-                        text = "Cancel",
-                        fontSize = 20.sp
-                    )
-                }
-            }
-        )
     }
 }
